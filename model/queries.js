@@ -2,9 +2,8 @@ const uuid = require('uuid');
 const Pool = require('pg').Pool
 
 console.log('--------')
-console.log('Host is: ')
-console.log(JSON.stringify(process.env.DB_USER))
-console.log(JSON.stringify(process.env.DB_HOST))
+console.log('process.ENV is: ')
+console.log(JSON.stringify(process.env))
 console.log('--------')
 const dbPool = new Pool({
   user: process.env.DB_USER,
