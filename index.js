@@ -2,6 +2,7 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 require('dotenv').config()
+
 var app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -41,6 +42,6 @@ app.get("/", async function(req, res) {
 });
 
 //set app to listen on port 3000
-app.listen(3000, function() {
+app.listen(process.env.PORT || 3000, function() {
     console.log("server is running on port 3000");
 });
