@@ -1,12 +1,13 @@
 const uuid = require('uuid');
 
 const Pool = require('pg').Pool
+console.log(JSON.stringify(process.env.host))
 const dbPool = new Pool({
-  user: process.env.user,
-  host: process.env.host,
-  database: process.env.database,
-  password: process.env.password,
-  port: process.env.port,
+  user: process.env.USER,
+  host: process.env.HOST,
+  database: process.env.DB_NAME,
+  password: process.env.PASSWORD,
+  port: process.env.PORT,
 })
 
 dbPool.query(`CREATE TABLE IF NOT EXISTS todos(
