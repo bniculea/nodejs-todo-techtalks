@@ -35,6 +35,17 @@ class CacheHelper {
         const stringifiedValue = JSON.stringify(value)
         this.redis?.set(key, stringifiedValue, TTL_UNIT_SECONDS, ttl)
     }
+
+    async invalidateCache(pattern) {
+       const keys = await this.redis?.keys(pattern)
+       if (keys) {
+           const pipeline = this.redis?.pipeline()
+           keys.forEach(function(key) {
+               pipeline.del(key)
+           })
+           await pipeline.exec()
+       }
+    }
 }
 
 module.exports = CacheHelper

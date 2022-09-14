@@ -14,14 +14,15 @@ app.use(express.static("public"));
 
 const db = require('./model/queries')
 
-const COMPLETED_TASKS_KEY= 'tasks:completed'
-const OPEN_TASKS_KEY='tasks:open'
+const TASKS_NAMESPACE='tasks'
+const COMPLETED_TASKS_KEY= `${TASKS_NAMESPACE}:completed`
+const OPEN_TASKS_KEY=`${TASKS_NAMESPACE}:open`
 
-//post route for adding new task
-app.post("/addtask", function(req, res) {
-    var newTask = req.body.newtask;
+app.post("/addtask", async function(req, res) {
+    const newTask = req.body.newtask;
+    await CacheHelper.getInstance().invalidateCache(TASKS_NAMESPACE)
     //add the new task from the post route
-    db.addTodo(newTask)
+    await db.addTodo(newTask)
     res.redirect("/");
 });
 
