@@ -8,9 +8,6 @@ class CacheHelper {
     }
 
     static getInstance(){
-        console.log('--------------')
-        console.log(process.env.REDIS_HOST)
-        console.log('--------------')
         if (!this.instance){
             this.instance = new CacheHelper()
         }
