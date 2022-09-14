@@ -14,13 +14,8 @@ app.use(express.static("public"));
 
 const db = require('./model/queries')
 
-const TASKS_NAMESPACE='tasks'
-const COMPLETED_TASKS_KEY= `${TASKS_NAMESPACE}:completed`
-const OPEN_TASKS_KEY=`${TASKS_NAMESPACE}:open`
-
 app.post("/addtask", async function(req, res) {
     const newTask = req.body.newtask;
-    await CacheHelper.getInstance().invalidateCache(TASKS_NAMESPACE)
     //add the new task from the post route
     await db.addTodo(newTask)
     res.redirect("/");
@@ -42,16 +37,8 @@ app.post("/removetask", async function(req, res) {
 
 //render the ejs and display added task, completed task
 app.get("/", async function(req, res) {
-    let openTasks = await CacheHelper.getInstance().get(OPEN_TASKS_KEY)
-    if (!openTasks){
-        openTasks = await db.getTodos(true)
-        CacheHelper.getInstance().set(OPEN_TASKS_KEY, openTasks, 30)
-    }
-    let completedTasks = await CacheHelper.getInstance().get(COMPLETED_TASKS_KEY)
-    if (!completedTasks) {
-        completedTasks = await db.getTodos(false)
-        CacheHelper.getInstance().set(COMPLETED_TASKS_KEY, completedTasks, 30)
-    }
+    let openTasks = await db.getTodos(true)
+    let completedTasks = await db.getTodos(false)
     res.render("index", { task: openTasks, complete: completedTasks });
 });
 
