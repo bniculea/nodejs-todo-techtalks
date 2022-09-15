@@ -21,10 +21,15 @@ dbPool.query(`CREATE TABLE IF NOT EXISTS todos(
    return results.rows
 })
 
-const getTodos = async (state) => {
-    const { rows } = await dbPool.query(`SELECT * FROM todos WHERE open = $1`, [state])
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+}
 
-    return rows
+const getTodos = async (state) => {
+    return delay(500).then(async ()=> {
+        const { rows } = await dbPool.query(`SELECT * FROM todos WHERE open = $1`, [state])
+        return rows
+    })
   }
 
 const addTodo = async (name) => {
