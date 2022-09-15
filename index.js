@@ -35,10 +35,22 @@ app.post("/removetask", async function(req, res) {
     res.redirect("/");
 });
 
+const TASKS_NAMESPACE = 'tasks'
+const COMPLETED_TASKS_KEY = `${TASKS_NAMESPACE}:completed`
+const OPEN_TASKS_KEY = `${TASKS_NAMESPACE}:open`
+
 //render the ejs and display added task, completed task
 app.get("/", async function(req, res) {
-    let openTasks = await db.getTodos(true)
-    let completedTasks = await db.getTodos(false)
+    let openTasks = await CacheHelper.getInstance().get(OPEN_TASKS_KEY)
+    if (!openTasks){
+        openTasks = await db.getTodos(true)
+        await CacheHelper.getInstance().set(OPEN_TASKS_KEY, openTasks,30)
+    }
+    let completedTasks = await CacheHelper.getInstance().get(COMPLETED_TASKS_KEY)
+    if (!completedTasks){
+        completedTasks = await db.getTodos(false)
+        await CacheHelper.getInstance().set(COMPLETED_TASKS_KEY, completedTasks, 30)
+    }
     res.render("index", { task: openTasks, complete: completedTasks });
 });
 
